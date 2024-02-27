@@ -21,7 +21,7 @@ pipeline {
 
         stage("CHECKOUT GIT REPO"){
             steps{
-                git branch: 'main', url: "${GIT_REPO}"
+                git branch: 'main', credentialsId: 'git-hub', url: 'https://github.com/aesakif/ci_cd_demo.git'
             }
         }
 
