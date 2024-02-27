@@ -9,7 +9,7 @@ pipeline {
         CLIENT_APP_NAME = "demojenkins"
         CLIENT_APP_IMAGE = "${DOCKERHUB_USERNAME}/${CLIENT_APP_NAME}"
      }
-
+ 
     stages {
         stage('CLEANUP WORKSPACE'){
             steps{
