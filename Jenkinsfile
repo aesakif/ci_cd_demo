@@ -33,7 +33,7 @@ pipeline {
 
         stage("PUSH DOCKER IMAGES TO DOCKERHUB"){
             steps{
-                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASSWORD', usernameVariable: 'USER_NAME')]) {
+                withCredentials([usernamePassword(credentialsId: 'devopsaes', passwordVariable: 'PASSWORD', usernameVariable: 'USER_NAME')]) {
 
                     sh'echo ${PASSWORD} | docker login --username ${USER_NAME} --password-stdin'
 
