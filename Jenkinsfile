@@ -15,7 +15,7 @@ pipeline {
         GIT_BRANCH = "main"
         GIT_CREDENTIAL_ID = "github"
 
-        APP_NAME = "ratul"
+        APP_NAME = "imgname"
         APP_NAMESPACE = "namesp"
         UPDATE_IMAGE_JOB = "UPDATE_IMAGE"
 
