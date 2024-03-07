@@ -23,7 +23,7 @@ pipeline {
                     def data = """{
                         "Name": "${APP_NAME}",
                         "Namespace": "${APP_NAMESPACE}",
-                        "Image": "${IMAGE}"
+                        "FrontendImg": "${IMAGE}"
                     }"""
                     sh "curl -X POST -H 'Content-Type: application/json' -d '${data}' '${GO_Endpoint}'"
                 }
