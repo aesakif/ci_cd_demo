@@ -1,13 +1,25 @@
 pipeline {
     agent any 
-
+    triggers {
+        GenericTrigger(
+        token: 'anytokenn',
+        )
+    }
     environment {
+        // Docker ......................
         IMAGE_TAG = "$BUILD_NUMBER"
-        DOCKERHUB_USERNAME = "devopsaes"
+        DOCKER_CREDENTIAL_ID = "dockerhub"
+        USER_NAME = "devopsaes"
+        // Git ..........................
         GIT_REPO = "https://github.com/aesakif/ci_cd_demo.git"
+        GIT_BRANCH = "main"
+        GIT_CREDENTIAL_ID = "github"
 
-        CLIENT_APP_NAME = "demojenkins"
-        CLIENT_APP_IMAGE = "${DOCKERHUB_USERNAME}/${CLIENT_APP_NAME}"
+        APP_NAME = "ratul"
+        APP_NAMESPACE = "akif"
+        UPDATE_IMAGE_JOB = "UPDATE_IMAGE"
+
+        GO_ENDPOINT = "http://174.138.103.249:80/goapi/anwarcloud/update_frontend"
      }
  
     stages {
@@ -21,33 +33,30 @@ pipeline {
 
         stage("CHECKOUT GIT REPO"){
             steps{
-                git branch: 'main', credentialsId: 'git-hub', url: 'https://github.com/aesakif/ci_cd_demo.git'
-            }
-        }
-
-        stage("BUILD DOCKER IMAGES"){
-            steps{
-                sh'docker build --no-cache -t ${CLIENT_APP_IMAGE}:${IMAGE_TAG} -t ${CLIENT_APP_IMAGE}:latest .'   
+                git branch: "${GIT_BRANCH}", credentialsId: "${GIT_CREDENTIAL_ID}", url: "${GIT_REPO}"
             }
         }
 
         stage("PUSH DOCKER IMAGES TO DOCKERHUB"){
             steps{
-                withCredentials([usernamePassword(credentialsId: 'devopsaes', passwordVariable: 'PASSWORD', usernameVariable: 'USER_NAME')]) {
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIAL_ID}", passwordVariable: 'PASSWORD', usernameVariable: 'USER_NAME')]) {
 
-                    sh'echo ${PASSWORD} | docker login --username ${USER_NAME} --password-stdin'
+                    sh"docker build -t ${USER_NAME}/${APP_NAME}:${IMAGE_TAG} -t ${USER_NAME}/${APP_NAME}:latest ."   
 
-                    sh'docker push ${CLIENT_APP_IMAGE}:${IMAGE_TAG}'
-                    sh'docker push ${CLIENT_APP_IMAGE}:latest'
+                    sh"echo ${PASSWORD} | docker login --username ${USER_NAME} --password-stdin"
 
-                    sh'docker logout'
+                    sh"docker push ${USER_NAME}/${APP_NAME}:${IMAGE_TAG}"
+                    sh"docker push ${USER_NAME}/${APP_NAME}:latest"
+
+                    sh"docker logout"
+
                 }
             }
         }
 
         stage("TRIGGERING THE CONFIG PIPELINE"){
             steps{
-                build job: 'demo_config', parameters: [string(name: 'IMAGE_TAG', value: env.IMAGE_TAG)]
+                build job: "${UPDATE_IMAGE_JOB}", parameters: [string(name: 'GO_Endpoint', value: env.GO_ENDPOINT), string(name: 'APP_NAME', value: env.APP_NAME), string(name: 'APP_NAMESPACE', value: env.APP_NAMESPACE), string(name: 'USER_NAME', value: env.USER_NAME), string(name: 'IMAGE_TAG', value: env.IMAGE_TAG)]
             }
         }
         
