@@ -16,10 +16,10 @@ pipeline {
         GIT_CREDENTIAL_ID = "github"
 
         APP_NAME = "ratul"
-        APP_NAMESPACE = "akif"
+        APP_NAMESPACE = "namesp"
         UPDATE_IMAGE_JOB = "UPDATE_IMAGE"
 
-        GO_ENDPOINT = "http://174.138.103.249:80/goapi/anwarcloud/update_frontend"
+        GO_ENDPOINT = "http://144.126.240.6/goapi/anwarcloud/update_frontend"
      }
  
     stages {
